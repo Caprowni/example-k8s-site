@@ -1,0 +1,3 @@
+GoSite has been deployed to the cluster.
+
+It is deployed as service "{{ template "name" . }}" and is listening on Port {{ .Values.service.externalPort }}.

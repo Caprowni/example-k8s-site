@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "name" . }}
+  labels:
+    {{- include "releaseLabels" . | indent 4 }}
+spec:
+  revisionHistoryLimit: 2
+  replicas: 1 
+  selector:
+    matchLabels:
+      {{- include "selectionLabels" . | indent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "releaseLabels" . | indent 8 }}
+      annotations:
+        checksum/secrets: {{ include (print $.Chart.Name "/templates/secrets.yaml") . | sha256sum | quote }}
+        checksum/configMap: {{ include (print $.Chart.Name "/templates/configMap.yaml") . | sha256sum | quote }}
+    spec:
+      containers:
+        - name: "gotest"
+          image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+          imagePullPolicy: "IfNotPresent"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.service.internalPort }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          envFrom:
+            - configMapRef:
+                name: {{ template "name" . }}
+            - secretRef:
+                name: {{ template "name" . }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}

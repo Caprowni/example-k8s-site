@@ -1,0 +1,26 @@
+---
+image:
+  name: go-site
+  tag: latest
+
+replica:
+  max: 5
+  min: 1
+  targetCPUUsage: 75
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "200m"
+    memory: "256Mi"
+
+service:
+  nodePort: 30100
+  externalPort: 80 
+  internalPort: 8000
+
+example:
+  username: 'whoami'
+  password: 'test1234'

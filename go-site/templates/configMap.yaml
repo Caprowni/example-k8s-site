@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "name" . }}
+  labels:
+    {{- include "releaseLabels" . | indent 4 }}
+data:
+# TODO - Add any other environmental values that need to be set
+#
+# These should be key:value pairs where the key is the environmental value to
+# be set and the value is the value for that environmental value. In the
+# example below the USERNAME environmental value will be set to be
+# example.username from the Values.
+  USERNAME: {{ .Values.example.username }}
